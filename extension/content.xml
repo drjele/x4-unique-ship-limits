@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<content id="drjele_unique_ship_limits"
+         name="Unique Ship Limits"
+         description="Switches that lift the build limit on the unique ships: Astrid, Experimental Shuttle, the Boron story corvette and the Timelines racers, plus one that keeps the Erlking research so a second one can be built. Blueprints are still required. Works on an existing savegame."
+         author="drjele"
+         version="100"
+         date="2026-09-07"
+         save="0"
+>
+    <text language="44"
+          name="Unique Ship Limits"
+          description="Switches that lift the build limit on the unique ships: Astrid, Experimental Shuttle, the Boron story corvette and the Timelines racers, plus one that keeps the Erlking research so a second one can be built. Blueprints are still required. Works on an existing savegame."
+    />
+    <dependency version="900"/>
+    <dependency id="ws_2042901274" optional="true" name="SirNukes Mod Support APIs" comment="only for the in-game options menu; the mod works without it"/>
+</content>

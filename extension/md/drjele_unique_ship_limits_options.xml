@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mdscript name="DrJele_UniqueShipLimitsOptions" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
+    <cues>
+
+        <cue name="RegisterOptions" instantiate="true" version="1">
+            <conditions>
+                <event_cue_signalled cue="md.Simple_Menu_Options.Reloaded"/>
+            </conditions>
+            <actions>
+                <signal_cue_instantly
+                        cue="md.Simple_Menu_Options.Register_Option"
+                        param="table[
+            $id        = 'drjele_unique_astrid_unlimited',
+            $category  = 'Unique Ship Limits',
+            $name      = 'Astrid unlimited',
+            $mouseover = 'Off is vanilla: one Astrid, and the game says outright that no more can ever be built once the existing ones are gone. On lifts the cap. You still need the Astrid blueprint, which only the Fan story hands over.',
+            $type      = 'button',
+            $default   = 0,
+            $callback  = OnAstridChanged,
+            ]"/>
+                <signal_cue_instantly
+                        cue="md.Simple_Menu_Options.Register_Option"
+                        param="table[
+            $id        = 'drjele_unique_xshuttle_unlimited',
+            $category  = 'Unique Ship Limits',
+            $name      = 'Experimental Shuttle unlimited',
+            $mouseover = 'Off is vanilla: one Experimental Shuttle. On lifts the cap. You still need the blueprint, which the Timelines epilogue hands over.',
+            $type      = 'button',
+            $default   = 0,
+            $callback  = OnExperimentalShuttleChanged,
+            ]"/>
+                <signal_cue_instantly
+                        cue="md.Simple_Menu_Options.Register_Option"
+                        param="table[
+            $id        = 'drjele_unique_boron_corvette_unlimited',
+            $category  = 'Unique Ship Limits',
+            $name      = 'Boron story corvette unlimited',
+            $mouseover = 'Off is vanilla: one of the corvette the Kingdom End story gives you. On lifts the cap. You still need its blueprint.',
+            $type      = 'button',
+            $default   = 0,
+            $callback  = OnBoronCorvetteChanged,
+            ]"/>
+                <signal_cue_instantly
+                        cue="md.Simple_Menu_Options.Register_Option"
+                        param="table[
+            $id        = 'drjele_unique_timelines_racers_unlimited',
+            $category  = 'Unique Ship Limits',
+            $name      = 'Timelines racers unlimited',
+            $mouseover = 'Off is vanilla: one each of the four Timelines racers - Argon, Teladi, Paranid and the Dart. On lifts the cap on all four at once. You still need each blueprint.',
+            $type      = 'button',
+            $default   = 0,
+            $callback  = OnTimelinesRacerChanged,
+            ]"/>
+                <signal_cue_instantly
+                        cue="md.Simple_Menu_Options.Register_Option"
+                        param="table[
+            $id        = 'drjele_unique_erlking_rebuildable',
+            $category  = 'Unique Ship Limits',
+            $name      = 'Erlking stays buildable',
+            $mouseover = 'Off is vanilla: queueing an Erlking takes the Erlking Power Core research away, so you can never order a second one. On puts the research back, which lets you build as many as you can pay for. You still need the Erlking blueprint, so the story is unchanged up to that point.',
+            $type      = 'button',
+            $default   = 0,
+            $callback  = OnErlkingRebuildableChanged,
+            ]"/>
+            </actions>
+        </cue>
+
+        <cue name="OnAstridChanged" instantiate="true">
+            <conditions>
+                <event_cue_signalled/>
+            </conditions>
+            <actions>
+                <set_value name="global.$DrJeleUniqueShipAstridUnlimited" exact="if event.param.$value then 1 else 0"/>
+                <signal_cue_instantly cue="md.DrJele_UniqueShipLimits.Reapply"/>
+            </actions>
+        </cue>
+
+        <cue name="OnExperimentalShuttleChanged" instantiate="true">
+            <conditions>
+                <event_cue_signalled/>
+            </conditions>
+            <actions>
+                <set_value name="global.$DrJeleUniqueShipExperimentalShuttleUnlimited" exact="if event.param.$value then 1 else 0"/>
+                <signal_cue_instantly cue="md.DrJele_UniqueShipLimits.Reapply"/>
+            </actions>
+        </cue>
+
+        <cue name="OnBoronCorvetteChanged" instantiate="true">
+            <conditions>
+                <event_cue_signalled/>
+            </conditions>
+            <actions>
+                <set_value name="global.$DrJeleUniqueShipBoronCorvetteUnlimited" exact="if event.param.$value then 1 else 0"/>
+                <signal_cue_instantly cue="md.DrJele_UniqueShipLimits.Reapply"/>
+            </actions>
+        </cue>
+
+        <cue name="OnTimelinesRacerChanged" instantiate="true">
+            <conditions>
+                <event_cue_signalled/>
+            </conditions>
+            <actions>
+                <set_value name="global.$DrJeleUniqueShipTimelinesRacerUnlimited" exact="if event.param.$value then 1 else 0"/>
+                <signal_cue_instantly cue="md.DrJele_UniqueShipLimits.Reapply"/>
+            </actions>
+        </cue>
+
+        <cue name="OnErlkingRebuildableChanged" instantiate="true">
+            <conditions>
+                <event_cue_signalled/>
+            </conditions>
+            <actions>
+                <set_value name="global.$DrJeleUniqueShipErlkingRebuildable" exact="if event.param.$value then 1 else 0"/>
+                <signal_cue_instantly cue="md.DrJele_UniqueShipLimits.Reapply"/>
+            </actions>
+        </cue>
+
+    </cues>
+</mdscript>

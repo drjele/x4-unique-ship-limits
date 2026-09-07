@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mdscript name="DrJele_UniqueShipLimits" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
+    <cues>
+
+        <cue name="Configuration" instantiate="true" namespace="static" version="1">
+            <conditions>
+                <event_cue_signalled cue="md.Setup.Start"/>
+            </conditions>
+            <actions>
+                <set_value name="$AstridUnlimited" exact="0" comment="1 lifts the cap on the Astrid; 0 is vanilla"/>
+                <set_value name="$ExperimentalShuttleUnlimited" exact="0" comment="1 lifts the cap on the Experimental Shuttle; 0 is vanilla"/>
+                <set_value name="$BoronCorvetteUnlimited" exact="0" comment="1 lifts the cap on the Kingdom End story corvette; 0 is vanilla"/>
+                <set_value name="$TimelinesRacerUnlimited" exact="0" comment="1 lifts the cap on all four Timelines racers; 0 is vanilla"/>
+                <set_value name="$ErlkingRebuildable" exact="0" comment="1 keeps the Erlking research after a build is queued, so a second one can be ordered; 0 is vanilla"/>
+                <set_value name="$UnlimitedLimit" exact="1000" comment="what a lifted cap is set to; there is no 'off' value for the counter, so this is just a number nothing will reach - lower it to cap a ship at an exact number instead"/>
+                <set_value name="$DebugChance" exact="0" comment="100 writes every applied change to the debug log"/>
+
+                <set_value name="global.$DrJeleUniqueShipLimitsConfig" exact="table[$AstridUnlimited              = $AstridUnlimited,
+                                                                             $ExperimentalShuttleUnlimited = $ExperimentalShuttleUnlimited,
+                                                                             $BoronCorvetteUnlimited       = $BoronCorvetteUnlimited,
+                                                                             $TimelinesRacerUnlimited      = $TimelinesRacerUnlimited,
+                                                                             $ErlkingRebuildable           = $ErlkingRebuildable,
+                                                                             $UnlimitedLimit               = $UnlimitedLimit,
+                                                                             $DebugChance                  = $DebugChance]"/>
+            </actions>
+        </cue>
+
+        <!-- Delayed so it runs after Configuration has published the table on the same signal, and after
+             the DLC setup cues' <patch sinceversion> blocks, which reset the limits to 1 when a savegame
+             made with an older script version is loaded. -->
+        <cue name="Apply" instantiate="true" version="1">
+            <conditions>
+                <event_cue_signalled cue="md.Setup.Start"/>
+            </conditions>
+            <delay exact="5s"/>
+            <actions>
+                <include_actions ref="ApplyLimits"/>
+            </actions>
+        </cue>
+
+        <!-- Signalled by the options menu when a setting changes. -->
+        <cue name="Reapply" instantiate="true">
+            <conditions>
+                <event_cue_signalled/>
+            </conditions>
+            <actions>
+                <include_actions ref="ApplyLimits"/>
+            </actions>
+        </cue>
+
+        <!-- The child names the Erlking macro directly, so it must never start listening without Tides of
+             Avarice. Not instantiated: the parent completes once and its child keeps listening from then on,
+             where instantiating would add a duplicate listener on every savegame load. -->
+        <cue name="ErlkingSupport">
+            <conditions>
+                <event_cue_signalled cue="md.Setup.Start"/>
+                <check_value value="null != @ware.ship_pir_xl_battleship_01_a"/>
+            </conditions>
+            <cues>
+                <!-- The Erlking has no build-limit counter. Instead Story_Research_Erlking.Player_Erlking_Build_Added
+                     strips research_erlking_core the instant a build is queued, and the ware needs that research as a
+                     production precursor - so you never get to order a second one. Same event and same macro test as
+                     the vanilla cue, delayed so this lands after it. Vanilla removes the research inside the
+                     event handler, so any delay at all is enough ordering - keep it short, because a save taken
+                     inside the window stores the research as still missing until the next load re-applies. -->
+                <cue name="ErlkingBuildQueued" instantiate="true">
+                    <conditions>
+                        <event_player_build_added/>
+                        <check_value value="event.param.isshipbuild"/>
+                        <check_value value="@event.param.buildobject.macro.ismacro.{macro.ship_pir_xl_battleship_01_a_macro}
+                                            or @event.param.macro.ismacro.{macro.ship_pir_xl_battleship_01_a_macro}"/>
+                    </conditions>
+                    <delay exact="1s"/>
+                    <actions>
+                        <include_actions ref="RestoreErlkingResearch"/>
+                    </actions>
+                </cue>
+            </cues>
+        </cue>
+
+        <library name="ApplyLimits">
+            <actions>
+                <set_value name="$Config" exact="if global.$DrJeleUniqueShipLimitsConfig? then global.$DrJeleUniqueShipLimitsConfig else table[]"/>
+                <set_value name="$DebugChance" exact="if $Config.$DebugChance? then $Config.$DebugChance else 0"/>
+
+                <set_value name="$Lifted" exact="if $Config.$UnlimitedLimit? then $Config.$UnlimitedLimit else 1000"/>
+
+                <!-- The counter has no 'no limit' value, so a lifted cap is a number nothing will reach. -->
+                <set_value name="$Astrid" exact="if 1 == (if global.$DrJeleUniqueShipAstridUnlimited? then global.$DrJeleUniqueShipAstridUnlimited else (if $Config.$AstridUnlimited? then $Config.$AstridUnlimited else 0)) then $Lifted else 1"/>
+                <set_value name="$Shuttle" exact="if 1 == (if global.$DrJeleUniqueShipExperimentalShuttleUnlimited? then global.$DrJeleUniqueShipExperimentalShuttleUnlimited else (if $Config.$ExperimentalShuttleUnlimited? then $Config.$ExperimentalShuttleUnlimited else 0)) then $Lifted else 1"/>
+                <set_value name="$Corvette" exact="if 1 == (if global.$DrJeleUniqueShipBoronCorvetteUnlimited? then global.$DrJeleUniqueShipBoronCorvetteUnlimited else (if $Config.$BoronCorvetteUnlimited? then $Config.$BoronCorvetteUnlimited else 0)) then $Lifted else 1"/>
+                <set_value name="$Racer" exact="if 1 == (if global.$DrJeleUniqueShipTimelinesRacerUnlimited? then global.$DrJeleUniqueShipTimelinesRacerUnlimited else (if $Config.$TimelinesRacerUnlimited? then $Config.$TimelinesRacerUnlimited else 0)) then $Lifted else 1"/>
+
+                <!-- signed="true" is required: the ship and station configuration menus read the key back with
+                     GetUserDataSigned, and an unsigned value reads as 0, which locks the ship out entirely.
+                     Writing a key whose DLC is not installed is harmless - it is only a string. -->
+                <set_userdata name="'limited_blueprint_ship_gen_m_yacht_01_a'" value="$Astrid" signed="true"/>
+                <set_userdata name="'limited_blueprint_ship_ter_s_xperimental_01_a'" value="$Shuttle" signed="true"/>
+                <set_userdata name="'limited_blueprint_ship_bor_m_corvette_02_a'" value="$Corvette" signed="true"/>
+                <do_for_each name="$RacerKey" in="['limited_blueprint_ship_arg_s_racer_01_a',
+                                                   'limited_blueprint_ship_gen_s_racer_01_a',
+                                                   'limited_blueprint_ship_par_s_racer_01_a',
+                                                   'limited_blueprint_ship_tel_s_racer_01_a']">
+                    <set_userdata name="$RacerKey" value="$Racer" signed="true"/>
+                </do_for_each>
+
+                <debug_text text="'DrJele Unique Ship Limits: astrid %s, experimental shuttle %s, boron corvette %s, timelines racers %s'.[$Astrid, $Shuttle, $Corvette, $Racer]" chance="$DebugChance"/>
+
+                <include_actions ref="RestoreErlkingResearch"/>
+            </actions>
+        </library>
+
+        <library name="RestoreErlkingResearch">
+            <actions>
+                <set_value name="$Config" exact="if global.$DrJeleUniqueShipLimitsConfig? then global.$DrJeleUniqueShipLimitsConfig else table[]"/>
+                <set_value name="$DebugChance" exact="if $Config.$DebugChance? then $Config.$DebugChance else 0"/>
+                <set_value name="$Enabled" exact="if global.$DrJeleUniqueShipErlkingRebuildable? then global.$DrJeleUniqueShipErlkingRebuildable else (if $Config.$ErlkingRebuildable? then $Config.$ErlkingRebuildable else 0)"/>
+
+                <do_if value="1 == $Enabled">
+                    <!-- @ keeps this quiet when Tides of Avarice is not installed, in which case neither ware exists. -->
+                    <set_value name="$ErlkingWare" exact="@ware.ship_pir_xl_battleship_01_a"/>
+                    <set_value name="$ErlkingResearch" exact="@ware.research_erlking_core"/>
+                    <!-- Nested rather than combined with and: MD does not promise to short-circuit, so a
+                         single condition would still evaluate player.blueprints.{null} without the DLC. -->
+                    <do_if value="null != $ErlkingWare">
+                        <do_if value="null != $ErlkingResearch">
+                            <!-- The blueprint gate stays: the story still has to hand it over first. -->
+                            <do_if value="player.blueprints.{$ErlkingWare}.any.exists">
+                                <do_if value="false == $ErlkingResearch.research.unlocked">
+                                    <add_encyclopedia_entry type="researchables" item="'research_erlking_core'"/>
+                                    <add_research ware="$ErlkingResearch"/>
+                                    <debug_text text="'DrJele Unique Ship Limits: erlking research restored'" chance="$DebugChance"/>
+                                </do_if>
+                            </do_if>
+                        </do_if>
+                    </do_if>
+                </do_if>
+            </actions>
+        </library>
+
+    </cues>
+</mdscript>
