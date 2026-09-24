@@ -107,7 +107,7 @@ Each can also be overridden at runtime without touching the file:
 
 Then signal `md.DrJele_UniqueShipLimits.Reapply`, or just reload.
 
-Set `$DebugChance` to 100 in the configuration cue to have every applied change written to the debug log.
+Turn on **Debug logging** in the options, or set `$DebugChance` to 100 in the configuration cue, to have every applied change written to the debug log.
 
 ## Debugging
 
@@ -119,7 +119,7 @@ Add this to the game's launch options — Steam, right click X4, **Properties �
 
 The log lands next to your savegames: `$HOME/.config/EgoSoft/X4/<userid>/debuglog.txt` on Linux, `Documents\Egosoft\X4\<userid>\debuglog.txt` on Windows. If Steam is installed as a snap it runs the game with a redirected home, which puts both under `~/snap/steam/common/`.
 
-The mod is silent by default. Set `$DebugChance` to `100` in the configuration cue of `extension/md/drjele_unique_ship_limits.xml`, re-run `./install.sh` and restart, and every applied change is written out:
+The mod is silent by default. To hear from it, turn on **Debug logging** in **Options → Extension Options → Unique Ship Limits** (needs SirNukes Mod Support APIs); without the API, set `$DebugChance` to `100` in the configuration cue of `extension/md/drjele_unique_ship_limits.xml`, re-run `./install.sh` and restart. Either way, every applied change is written out:
 
 ```
 DrJele Unique Ship Limits: astrid 1000, experimental shuttle 1, boron corvette 1, timelines racers 1

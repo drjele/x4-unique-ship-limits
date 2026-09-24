@@ -62,6 +62,17 @@
             $default   = 0,
             $callback  = OnErlkingRebuildableChanged,
             ]"/>
+                <signal_cue_instantly
+                        cue="md.Simple_Menu_Options.Register_Option"
+                        param="table[
+            $id        = 'drjele_unique_ship_limits_debug',
+            $category  = 'Unique Ship Limits',
+            $name      = 'Debug logging',
+            $mouseover = 'Writes every applied limit and every Erlking research change to the debug log. Needs the game started with -debug scripts.',
+            $type      = 'button',
+            $default   = 0,
+            $callback  = OnDebugChanged,
+            ]"/>
             </actions>
         </cue>
 
@@ -112,6 +123,15 @@
             <actions>
                 <set_value name="global.$DrJeleUniqueShipErlkingRebuildable" exact="if event.param.$value then 1 else 0"/>
                 <signal_cue_instantly cue="md.DrJele_UniqueShipLimits.Reapply"/>
+            </actions>
+        </cue>
+
+        <cue name="OnDebugChanged" instantiate="true">
+            <conditions>
+                <event_cue_signalled/>
+            </conditions>
+            <actions>
+                <set_value name="global.$DrJeleUniqueShipLimitsDebugChance" exact="if event.param.$value then 100 else 0"/>
             </actions>
         </cue>
 

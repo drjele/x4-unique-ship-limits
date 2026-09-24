@@ -81,7 +81,7 @@
         <library name="ApplyLimits">
             <actions>
                 <set_value name="$Config" exact="if global.$DrJeleUniqueShipLimitsConfig? then global.$DrJeleUniqueShipLimitsConfig else table[]"/>
-                <set_value name="$DebugChance" exact="if $Config.$DebugChance? then $Config.$DebugChance else 0"/>
+                <set_value name="$DebugChance" exact="if global.$DrJeleUniqueShipLimitsDebugChance? then global.$DrJeleUniqueShipLimitsDebugChance else (if $Config.$DebugChance? then $Config.$DebugChance else 0)"/>
 
                 <set_value name="$Lifted" exact="if $Config.$UnlimitedLimit? then $Config.$UnlimitedLimit else 1000"/>
 
@@ -113,7 +113,7 @@
         <library name="RestoreErlkingResearch">
             <actions>
                 <set_value name="$Config" exact="if global.$DrJeleUniqueShipLimitsConfig? then global.$DrJeleUniqueShipLimitsConfig else table[]"/>
-                <set_value name="$DebugChance" exact="if $Config.$DebugChance? then $Config.$DebugChance else 0"/>
+                <set_value name="$DebugChance" exact="if global.$DrJeleUniqueShipLimitsDebugChance? then global.$DrJeleUniqueShipLimitsDebugChance else (if $Config.$DebugChance? then $Config.$DebugChance else 0)"/>
                 <set_value name="$Enabled" exact="if global.$DrJeleUniqueShipErlkingRebuildable? then global.$DrJeleUniqueShipErlkingRebuildable else (if $Config.$ErlkingRebuildable? then $Config.$ErlkingRebuildable else 0)"/>
 
                 <do_if value="1 == $Enabled">

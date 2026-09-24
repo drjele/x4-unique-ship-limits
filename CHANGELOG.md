@@ -4,12 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.1.0] - 2026-09-24 - Debug logging toggle
+
 ### Changed
 
 - Detailed Steam Workshop description, covering every setting, where to change it, and the required and optional dependencies.
 
 ### Added
 
+- **Debug logging** toggle in Extension Options: switches the mod's debug log output on and off in game, instead of editing `$DebugChance` and reinstalling.
 - `publish.sh update` options `--minor`, `--namedesc` and `--readback`, for an update that leaves the version number alone, one that also pushes the name and description to Steam, and one that writes Steam's own text back into `content.xml.steam`.
 
 ### Fixed
@@ -45,4 +48,5 @@ All notable changes to this project will be documented in this file.
 - No blueprint is granted. Each ship still needs the blueprint its story hands over, and the Erlking switch only acts once the player already holds the Erlking blueprint.
 - The counters live in the profile's `userdata.xml`, not in the savegame: a raised limit applies to every save on the profile and survives uninstalling the mod. See the README for how to put it back.
 
+[v1.1.0]: https://github.com/drjele/x4-unique-ship-limits/releases/tag/v1.1.0
 [v1.0.0]: https://github.com/drjele/x4-unique-ship-limits/releases/tag/v1.0.0
